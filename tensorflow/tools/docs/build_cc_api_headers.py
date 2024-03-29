@@ -19,6 +19,7 @@ import subprocess
 
 from absl import app
 from absl import flags
+from security import safe_command
 
 FLAGS = flags.FLAGS
 
@@ -37,8 +38,8 @@ def build_headers(output_dir):
   os.makedirs(output_dir, exist_ok=True)
 
   # `$ yes | configure`
-  yes = subprocess.Popen(['yes', ''], stdout=subprocess.PIPE)
-  configure = subprocess.Popen([TENSORFLOW_ROOT / 'configure'],
+  yes = safe_command.run(subprocess.Popen, ['yes', ''], stdout=subprocess.PIPE)
+  configure = safe_command.run(subprocess.Popen, [TENSORFLOW_ROOT / 'configure'],
                                stdin=yes.stdout,
                                cwd=TENSORFLOW_ROOT)
   configure.communicate()

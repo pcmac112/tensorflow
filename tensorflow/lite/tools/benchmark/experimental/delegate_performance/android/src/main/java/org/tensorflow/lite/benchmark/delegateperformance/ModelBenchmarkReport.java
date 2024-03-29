@@ -168,7 +168,7 @@ public abstract class ModelBenchmarkReport implements ModelBenchmarkReportInterf
     // Here is a mitigation to the lack of support for criteria operators. "ok" metric is handled
     // specifically for the accuracy benchmarking results.
     // TODO(b/267313326): remove the mitigation after the criteria operators are added.
-    if (metricName.equals("ok")) {
+    if ("ok".equals(metricName)) {
       if (testTargetValue == AccuracyBenchmarkReport.PASS) {
         // The test target delegate passed the accuracy checks.
         result = BenchmarkResultType.PASS;

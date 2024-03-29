@@ -38,7 +38,7 @@ public final class Operands {
     for (Operand<?> input : inputs) {
       outputList.add(input.asOutput());
     }
-    return outputList.toArray(new Output<?>[outputList.size()]);
+    return outputList.toArray(new Output<?>[0]);
   }
 
   // Disabled constructor

@@ -600,7 +600,7 @@ public final class Tensor<T> implements AutoCloseable {
   }
 
   private static void throwExceptionIfNotByteOfByteArrays(Object array) {
-    if (!array.getClass().getName().equals("[[B")) {
+    if (!"[[B".equals(array.getClass().getName())) {
       throw new IllegalArgumentException(
           "object cannot be converted to a Tensor as it includes an array with null elements");
     }

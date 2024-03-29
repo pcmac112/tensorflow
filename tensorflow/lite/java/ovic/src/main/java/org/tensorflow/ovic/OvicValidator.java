@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /** Validate a submission model. */
@@ -44,7 +45,7 @@ public class OvicValidator {
     }
     final String modelFile = args[0];
     final String taskString = args[1];
-    final boolean isDetection = taskString.equals("detect");
+    final boolean isDetection = "detect".equals(taskString);
     // Label file for detection is never used, so the same label file is used for both tasks.
     final String labelPath =
         "tensorflow/lite/java/ovic/src/testdata/labels.txt";
@@ -80,7 +81,7 @@ public class OvicValidator {
   private static ByteBuffer createByteBuffer(int imgWidth, int imgHeight) {
     ByteBuffer imgData = ByteBuffer.allocateDirect(imgHeight * imgWidth * 3);
     imgData.order(ByteOrder.nativeOrder());
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     for (int y = 0; y < imgHeight; y++) {
       for (int x = 0; x < imgWidth; x++) {
         int val = rand.nextInt();

@@ -17,6 +17,7 @@ import dataclasses
 import re
 import subprocess
 from typing import Generator, Iterable, TypeVar
+from security import safe_command
 
 _T = TypeVar("_T")
 
@@ -107,8 +108,7 @@ def parse_hunks(diff: str) -> list[Hunk]:
 
 def get_git_diff_stdout() -> str:
   """Run git diff with appropriate arguments and capture stdout as a str."""
-  proc = subprocess.run(
-      ["git", "diff", "origin/main", "HEAD"],
+  proc = safe_command.run(subprocess.run, ["git", "diff", "origin/main", "HEAD"],
       capture_output=True,
       check=True,
       text=True,
