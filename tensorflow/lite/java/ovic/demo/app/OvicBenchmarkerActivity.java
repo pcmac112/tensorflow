@@ -25,6 +25,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import io.github.pixee.security.BoundedLineReader;
+import io.github.pixee.security.SystemCommand;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -215,7 +217,7 @@ public class OvicBenchmarkerActivity extends Activity {
     String command = String.format("taskset -a -p %x %d", mask, myPid);
     try {
       // TODO(b/153429929) This is deprecated, but updating is not safe while verification is hard.
-      Runtime.getRuntime().exec(command).waitFor();
+      SystemCommand.runCommand(Runtime.getRuntime(), command).waitFor();
     } catch (InterruptedException e) {
       throw new IOException("Interrupted: " + e);
     }
@@ -255,10 +257,10 @@ public class OvicBenchmarkerActivity extends Activity {
     BufferedReader bufReader = null;
     try {
       bufReader = new BufferedReader(new FileReader(file));
-      while ((line = bufReader.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(bufReader, 5_000_000)) != null) {
         if (line.startsWith(resultPrefix)) {
           allowedMask = Integer.valueOf(line.substring(resultPrefix.length()).trim(), 16);
-          allowedCPU = bufReader.readLine();
+          allowedCPU = BoundedLineReader.readLine(bufReader, 5_000_000);
           break;
         }
       }

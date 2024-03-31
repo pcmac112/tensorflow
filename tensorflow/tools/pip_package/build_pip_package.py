@@ -37,6 +37,7 @@ from tensorflow.tools.pip_package.utils.utils import create_init_files
 from tensorflow.tools.pip_package.utils.utils import is_macos
 from tensorflow.tools.pip_package.utils.utils import is_windows
 from tensorflow.tools.pip_package.utils.utils import replace_inplace
+from security import safe_command
 
 
 def parse_args() -> argparse.Namespace:
@@ -240,9 +241,9 @@ def patch_so(srcs_dir: str) -> None:
         ["patchelf", "--print-rpath",
          "{}/{}".format(srcs_dir, file)]).decode().strip()
     new_rpath = rpath + ":" + path
-    subprocess.run(["patchelf", "--set-rpath", new_rpath,
+    safe_command.run(subprocess.run, ["patchelf", "--set-rpath", new_rpath,
                     "{}/{}".format(srcs_dir, file)], check=True)
-    subprocess.run(["patchelf", "--shrink-rpath",
+    safe_command.run(subprocess.run, ["patchelf", "--shrink-rpath",
                     "{}/{}".format(srcs_dir, file)], check=True)
 
 
@@ -319,8 +320,7 @@ def build_wheel(dir_path: str, cwd: str, project_name: str,
   if collab == "True":
     env["collaborator_build"] = True
 
-  subprocess.run(
-      [
+  safe_command.run(subprocess.run, [
           sys.executable,
           "tensorflow/tools/pip_package/setup.py",
           "bdist_wheel",

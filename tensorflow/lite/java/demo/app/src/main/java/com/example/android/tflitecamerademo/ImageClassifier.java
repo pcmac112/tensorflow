@@ -24,6 +24,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -217,7 +218,7 @@ public abstract class ImageClassifier {
     BufferedReader reader =
         new BufferedReader(new InputStreamReader(activity.getAssets().open(getLabelPath())));
     String line;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       labelList.add(line);
     }
     reader.close();

@@ -21,10 +21,6 @@ Usage:
     python3 grpc_tpu_worker.py
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import argparse
 import os
 import sys
@@ -34,15 +30,15 @@ import requests
 from tensorflow.core.protobuf import config_pb2
 from tensorflow.core.protobuf import tensorflow_server_pb2
 from tensorflow.python.training import server_lib
+from security import safe_requests
 
 
 def get_metadata(key):
-  return requests.get(
-      'http://metadata.google.internal/computeMetadata'
+  return safe_requests.get('http://metadata.google.internal/computeMetadata'
       '/v1/instance/attributes/{}'.format(key),
       headers={
           'Metadata-Flavor': 'Google'
-      }).text
+      }, timeout=60).text
 
 
 def get_host_ip():
@@ -50,7 +46,7 @@ def get_host_ip():
       'http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip',
       headers={
           'Metadata-Flavor': 'Google'
-      }).text
+      }, timeout=60).text
 
 
 def setup_env_vars():
@@ -87,8 +83,7 @@ def setup_env_vars():
 
   # If v4 TPU don't set any topology related flags,
   # libtpu will set these values.
-  if not (accelerator_type.startswith('v4-') or
-          accelerator_type.startswith('v5')):
+  if not accelerator_type.startswith(('v4-', 'v5')):
     os.environ['TPU_CHIPS_PER_HOST_BOUNDS'] = '2,2,1'
     os.environ['TPU_HOST_BOUNDS'] = accelerator_type_to_host_bounds[
         accelerator_type]

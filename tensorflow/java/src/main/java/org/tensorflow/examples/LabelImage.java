@@ -18,6 +18,7 @@ package org.tensorflow.examples;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -149,7 +150,7 @@ public class LabelImage {
 
   private static List<String> readAllLinesOrExit(Path path) {
     try {
-      return Files.readAllLines(path, Charset.forName("UTF-8"));
+      return Files.readAllLines(path, StandardCharsets.UTF_8);
     } catch (IOException e) {
       System.err.println("Failed to read [" + path + "]: " + e.getMessage());
       System.exit(0);

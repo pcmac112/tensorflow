@@ -16,6 +16,7 @@ limitations under the License.
 package org.tensorflow;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /** An {@link OperationBuilder} for adding {@link GraphOperation}s to a {@link Graph}. */
 public final class GraphOperationBuilder implements OperationBuilder {
@@ -103,7 +104,7 @@ public final class GraphOperationBuilder implements OperationBuilder {
 
   @Override
   public GraphOperationBuilder setAttr(String name, String value) {
-    setAttr(name, value.getBytes(Charset.forName("UTF-8")));
+    setAttr(name, value.getBytes(StandardCharsets.UTF_8));
     return this;
   }
 
@@ -281,7 +282,7 @@ public final class GraphOperationBuilder implements OperationBuilder {
 
   @Override
   public GraphOperationBuilder setAttr(String name, String[] value) {
-    Charset utf8 = Charset.forName("UTF-8");
+    Charset utf8 = StandardCharsets.UTF_8;
     Object[] objects = new Object[value.length];
     for (int i = 0; i < value.length; ++i) {
       objects[i] = value[i].getBytes(utf8);
